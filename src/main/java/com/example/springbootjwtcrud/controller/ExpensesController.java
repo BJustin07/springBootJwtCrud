@@ -1,4 +1,1 @@
-package com.example.springbootjwtcrud.controller;
-
-public class ExpensesController {
-}
+package com.example.springbootjwtcrud.controller;import org.springframework.web.bind.annotation.GetMapping;import org.springframework.web.bind.annotation.RequestMapping;import org.springframework.web.bind.annotation.RestController;@RestController("/expenses")public class ExpensesController {    @GetMapping()    public String GetTotalExpenses(){        return "Total Expenses";    }}
