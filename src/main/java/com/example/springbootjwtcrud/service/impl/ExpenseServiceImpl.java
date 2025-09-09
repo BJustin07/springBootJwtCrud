@@ -7,6 +7,7 @@ import com.example.springbootjwtcrud.service.ExpenseService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -14,13 +15,19 @@ public class ExpenseServiceImpl implements ExpenseService {
     //later add a repository to save to database.
     private double sum = 0;
     private ExpensesCategories expensesCategories;
-    private List<Double> TotalExpense;
+    private final List<Double> TotalExpense = new ArrayList<>();
 
-    public List<Double> GetAllExpenses(){
+    public List<Double> GetAllExpenses() throws ExpensesException {
+        if(TotalExpense.isEmpty()){
+            throw new ExpensesException("Expenses list is empty");
+        }
         return TotalExpense;
     }
 
-    public String ListExpense(Double amount, ExpensesCategories expensesCategory){
+    public String ListExpense(Double amount, ExpensesCategories expensesCategory) throws ExpensesException{
+        if (amount <= 0 || expensesCategory == null) {
+            throw new ExpensesException("Please enter a valid amount and category");
+        }
         TotalExpense.add(amount);
         sum += amount;
         return "Successfully added expense for: " + expensesCategory + " amounts to: " + amount;
@@ -31,13 +38,13 @@ public class ExpenseServiceImpl implements ExpenseService {
        if(!successful){
            throw new ExpensesException("Expenses could not be deleted, it does not exist");
        }
-        return "Successfully removed expense amounting to: " + amount;
+        return "Successfully removed expense amounting to: " + amount + " Current expense is: " + TotalExpense;
     }
 
-    public String UpdateExpensePrice(Double amount, Double newAmount){
+    public String UpdateExpensePrice(Double amount, Double newAmount) throws ExpensesException {
         boolean expenseExists = TotalExpense.contains(amount);
         if (!expenseExists) {
-            throw new ExpensesException("Expenses could not be updated, it does not exist");
+            throw new ExpensesException("Expenses could not be updated, it does not exist, current expense list is: " + TotalExpense);
         }
         TotalExpense.remove(amount);
         sum -= amount;
